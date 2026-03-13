@@ -6,9 +6,11 @@ from models.cita     import (crear_cita, consultar_cita, obtener_cita_por_id,
 
 app = Flask(__name__)
 app.secret_key = 'eps_citas_secret_2024'
+import traceback
+
 @app.errorhandler(500)
 def internal_error(error):
-    return str(error), 500
+    return f"<pre>{traceback.format_exc()}</pre>", 500
 # ─── INICIO ────────────────────────────────────────────────────────────────────
 @app.route('/')
 def index():
