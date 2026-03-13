@@ -136,6 +136,7 @@ def eliminar_cita_ruta(cita_id):
     eliminar_cita(cita_id)
     flash('Cita eliminada.', 'info')
     return redirect(url_for('citas'))
-
+import logging
+logging.basicConfig(level=logging.DEBUG)
 if __name__ == '__main__':
     app.run(debug=True)
