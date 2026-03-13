@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Consultar Cita – EPS Citas{% endblock %}
+
+{% set tipo_colors = {
+  'General':      'success',
+  'Odontología':  'info',
+  'Especialista': 'warning',
+  'Oftalmología': 'primary',
+  'Cardiología':  'danger',
+  'Neumología':   'secondary'
+} %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card mb-4">
+      <div class="card-header">
+        <i class="bi bi-search"></i>Consultar Cita por Documento
+      </div>
+      <div class="card-body p-4">
+        <form method="POST">
+          <label class="form-label">Número de Documento del Paciente</label>
+          <div class="input-group">
+            <input type="text" name="documento" class="form-control form-control-lg"
+                   value="{{ documento }}" placeholder="Ej: 1023456789" required>
+            <button type="submit" class="btn btn-teal px-4">
+              <i class="bi bi-search me-1"></i>Buscar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {% if citas %}
+      <h5 class="mb-3" style="color:var(--teal)">
+        <i class="bi bi-person-check-fill me-2"></i>
+        {{ citas[0].nombre }} {{ citas[0].apellido }}
+        <small class="text-muted fs-6">— {{ citas|length }} cita(s) encontrada(s)</small>
+      </h5>
+
+      {% for c in citas %}
+      <div class="card mb-3" style="border-left: 5px solid var(--teal);">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <span class="badge bg-{{ tipo_colors.get(c.tipo_cita, 'secondary') }} badge-tipo fs-6">
+              {{ c.tipo_cita }}
+            </span>
+            <span class="text-muted small">Cita #{{ c.cita_id }}</span>
+          </div>
+          <div class="row g-2">
+            <div class="col-sm-6">
+              <small class="text-muted d-block">Médico</small>
+              <strong><i class="bi bi-person-badge me-1" style="color:var(--teal)"></i>{{ c.medico }}</strong>
+            </div>
+            <div class="col-sm-6">
+              <small class="text-muted d-block">EPS</small>
+              <strong>{{ c.eps }}</strong>
+            </div>
+            <div class="col-sm-6">
+              <small class="text-muted d-block">Fecha</small>
+              <strong><i class="bi bi-calendar3 me-1" style="color:var(--teal)"></i>{{ c.fecha }}</strong>
+            </div>
+            <div class="col-sm-6">
+              <small class="text-muted d-block">Hora</small>
+              <strong><i class="bi bi-clock me-1" style="color:var(--teal)"></i>{{ c.hora }}</strong>
+            </div>
+            <div class="col-12">
+              <small class="text-muted d-block">Dirección EPS</small>
+              <strong><i class="bi bi-geo-alt-fill me-1" style="color:var(--teal)"></i>{{ c.direccion_eps or '—' }}</strong>
+            </div>
+          </div>
+          <div class="mt-3">
+            <a href="{{ url_for('editar_cita', cita_id=c.cita_id) }}"
+               class="btn btn-sm btn-outline-primary me-2">
+              <i class="bi bi-pencil-fill me-1"></i>Modificar
+            </a>
+            <a href="{{ url_for('eliminar_cita_ruta', cita_id=c.cita_id) }}"
+               class="btn btn-sm btn-outline-danger"
+               onclick="return confirm('¿Cancelar esta cita?')">
+              <i class="bi bi-x-circle me-1"></i>Cancelar Cita
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

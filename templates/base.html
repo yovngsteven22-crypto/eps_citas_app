@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}EPS Citas Médicas{% endblock %}</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --teal:      #0D7377;
+      --teal-dark: #0a5c5f;
+      --mint:      #32E0C4;
+      --cyan:      #14BDEB;
+      --bg:        #f0fafa;
+    }
+    body { background: var(--bg); font-family: 'Segoe UI', sans-serif; }
+
+    /* NAVBAR */
+    .navbar { background: var(--teal); box-shadow: 0 2px 12px rgba(0,0,0,.25); }
+    .navbar-brand { color: #fff !important; font-weight: 700; font-size: 1.3rem; letter-spacing: .5px; }
+    .navbar-brand span { color: var(--mint); }
+    .nav-link { color: rgba(255,255,255,.85) !important; font-weight: 500; transition: color .2s; }
+    .nav-link:hover, .nav-link.active { color: var(--mint) !important; }
+    .nav-link i { margin-right: 4px; }
+
+    /* CARDS */
+    .card { border: none; border-radius: 14px; box-shadow: 0 2px 16px rgba(13,115,119,.12); }
+    .card-header { border-radius: 14px 14px 0 0 !important; background: var(--teal); color: #fff; font-weight: 600; padding: .85rem 1.25rem; }
+    .card-header i { color: var(--mint); margin-right: 8px; }
+
+    /* BUTTONS */
+    .btn-teal  { background: var(--teal); color: #fff; border: none; }
+    .btn-teal:hover  { background: var(--teal-dark); color: #fff; }
+    .btn-mint  { background: var(--mint); color: #0D7377; font-weight: 600; border: none; }
+    .btn-mint:hover  { background: #27c9b0; color: #0a5c5f; }
+
+    /* FORM */
+    .form-control:focus, .form-select:focus {
+      border-color: var(--mint);
+      box-shadow: 0 0 0 .2rem rgba(50,224,196,.25);
+    }
+    .form-label { font-weight: 600; color: var(--teal-dark); font-size: .9rem; }
+
+    /* TABLE */
+    .table thead th { background: var(--teal); color: #fff; border: none; }
+    .table-hover tbody tr:hover { background: #e0f7f7; }
+    .badge-tipo { font-size: .78rem; padding: .35em .7em; border-radius: 20px; }
+
+    /* ALERTS */
+    .alert { border-radius: 10px; border: none; }
+
+    /* STAT CARDS */
+    .stat-card { border-radius: 14px; padding: 1.4rem 1.6rem; color: #fff; }
+    .stat-card .num { font-size: 2.4rem; font-weight: 700; }
+    .stat-card .lbl { font-size: .85rem; opacity: .85; }
+
+    /* HERO */
+    .hero { background: linear-gradient(135deg, var(--teal) 60%, var(--cyan)); border-radius: 18px; color: #fff; padding: 2.5rem 2rem; }
+    .hero h1 { font-size: 2rem; font-weight: 700; }
+    .hero p  { opacity: .9; }
+
+    footer { background: var(--teal); color: rgba(255,255,255,.7); padding: 1rem; text-align: center; font-size: .82rem; margin-top: 3rem; }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('index') }}">
+      <i class="bi bi-heart-pulse-fill"></i> EPS<span>Citas</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon" style="filter:invert(1)"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav ms-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}"><i class="bi bi-house-fill"></i>Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('pacientes') }}"><i class="bi bi-people-fill"></i>Pacientes</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('registrar_paciente') }}"><i class="bi bi-person-plus-fill"></i>Registrar</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('citas') }}"><i class="bi bi-calendar2-check-fill"></i>Citas</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('reservar_cita') }}"><i class="bi bi-calendar-plus-fill"></i>Nueva Cita</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('consultar_cita_ruta') }}"><i class="bi bi-search"></i>Consultar</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="alert alert-{{ 'danger' if cat == 'error' else ('success' if cat == 'success' else 'info') }} alert-dismissible fade show" role="alert">
+        <i class="bi bi-{{ 'x-circle-fill' if cat == 'error' else ('check-circle-fill' if cat == 'success' else 'info-circle-fill') }} me-2"></i>
+        {{ msg }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</div>
+
+<footer>SENA – Análisis y Desarrollo de Software &nbsp;|&nbsp; Python · Flask · MySQL &nbsp;|&nbsp; 2024</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

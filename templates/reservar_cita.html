@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if editar else 'Reservar' }} Cita – EPS Citas{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header">
+        <i class="bi bi-calendar-{{ 'pencil' if editar else 'plus-fill' }}"></i>
+        {{ 'Editar Cita' if editar else 'Reservar Nueva Cita' }}
+      </div>
+      <div class="card-body p-4">
+        <form method="POST">
+
+          <!-- Documento paciente -->
+          <div class="mb-3">
+            <label class="form-label">Paciente (Documento) *</label>
+            {% if editar %}
+              <input type="text" name="documento" class="form-control"
+                     value="{{ cita.documento }}" readonly>
+            {% else %}
+              <select name="documento" class="form-select" required>
+                <option value="">-- Selecciona un paciente --</option>
+                {% for p in pacientes %}
+                  <option value="{{ p.documento }}">{{ p.documento }} – {{ p.apellido }}, {{ p.nombre }}</option>
+                {% endfor %}
+              </select>
+            {% endif %}
+          </div>
+
+          <!-- Médico -->
+          <div class="mb-3">
+            <label class="form-label">Médico Asignado *</label>
+            <input type="text" name="medico" class="form-control" required
+                   value="{{ cita.medico if cita else '' }}"
+                   placeholder="Dr. Nombre Apellido">
+          </div>
+
+          <!-- Tipo de cita -->
+          <div class="mb-3">
+            <label class="form-label">Tipo de Cita *</label>
+            <select name="tipo_cita" class="form-select" required>
+              {% set tipos = ['General', 'Odontología', 'Especialista', 'Oftalmología', 'Cardiología', 'Neumología'] %}
+              {% for t in tipos %}
+                <option value="{{ t }}" {{ 'selected' if cita and cita.tipo_cita == t else '' }}>{{ t }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Fecha y Hora -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Fecha *</label>
+              <input type="date" name="fecha" class="form-control" required
+                     value="{{ cita.fecha if cita else '' }}">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Hora *</label>
+              <input type="time" name="hora" class="form-control" required
+                     value="{{ cita.hora if cita else '' }}">
+            </div>
+          </div>
+
+          <!-- Dirección -->
+          <div class="mb-3">
+            <label class="form-label">Dirección de la EPS</label>
+            <input type="text" name="direccion_eps" class="form-control"
+                   value="{{ cita.direccion_eps if cita else '' }}"
+                   placeholder="Ej: Calle 72 # 10-30, Bogotá">
+          </div>
+
+          <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-teal flex-fill">
+              <i class="bi bi-check-circle-fill me-1"></i>
+              {{ 'Guardar Cambios' if editar else 'Reservar Cita' }}
+            </button>
+            <a href="{{ url_for('citas') }}" class="btn btn-outline-secondary flex-fill">
+              <i class="bi bi-arrow-left me-1"></i>Cancelar
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
