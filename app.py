@@ -8,9 +8,15 @@ app = Flask(__name__)
 app.secret_key = 'eps_citas_secret_2024'
 import traceback
 
-@app.errorhandler(500)
-def internal_error(error):
-    return f"<pre>{traceback.format_exc()}</pre>", 500
+@app.route('/debug')
+def debug():
+    from config import Config
+    return {
+        'host': Config.MYSQL_HOST,
+        'user': Config.MYSQL_USER,
+        'db': Config.MYSQL_DB,
+        'port': Config.MYSQL_PORT
+    }
 # ─── INICIO ────────────────────────────────────────────────────────────────────
 @app.route('/')
 def index():
